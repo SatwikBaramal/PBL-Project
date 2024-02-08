@@ -1,25 +1,30 @@
-include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 // Define a structure for the email node
-struct EmailNode {
+struct EmailNode
+{
     char subject[50];
     char sender[50];
     char message[200];
-    struct EmailNode* next;
+    struct EmailNode *next;
 };
 
 // Define a structure for the user
-struct User {
+struct User
+{
     char username[50];
-    struct EmailNode* inbox;
+    struct EmailNode *inbox;
 };
 
 // Function to find a user by username
-struct User* findUser(struct User* users, int numUsers, const char* targetUsername) {
-    for (int i = 0; i < numUsers; ++i) {
-        if (strcmp(users[i].username, targetUsername) == 0) {
+struct User *findUser(struct User *users, int numUsers, const char *targetUsername)
+{
+    for (int i = 0; i < numUsers; ++i)
+    {
+        if (strcmp(users[i].username, targetUsername) == 0)
+        {
             return &users[i];
         }
     }
@@ -27,14 +32,17 @@ struct User* findUser(struct User* users, int numUsers, const char* targetUserna
 }
 
 // Function to send an email from one user to another
-void sendEmail(struct User* users, int numUsers, const char* senderUsername, const char* receiverUsername,
-               const char* subject, const char* message) {
-    struct User* sender = findUser(users, numUsers, senderUsername);
-    struct User* receiver = findUser(users, numUsers, receiverUsername);
+void sendEmail(struct User *users, int numUsers, const char *senderUsername, const char *receiverUsername,
+               const char *subject, const char *message)
+{
+    struct User *sender = findUser(users, numUsers, senderUsername);
+    struct User *receiver = findUser(users, numUsers, receiverUsername);
 
-    if (sender != NULL && receiver != NULL) {
-        struct EmailNode* newEmail = (struct EmailNode*)malloc(sizeof(struct EmailNode));
-        if (newEmail == NULL) {
+    if (sender != NULL && receiver != NULL)
+    {
+        struct EmailNode *newEmail = (struct EmailNode *)malloc(sizeof(struct EmailNode));
+        if (newEmail == NULL)
+        {
             printf("Memory allocation error.\n");
             exit(EXIT_FAILURE);
         }
@@ -47,29 +55,35 @@ void sendEmail(struct User* users, int numUsers, const char* senderUsername, con
         newEmail->next = receiver->inbox;
         receiver->inbox = newEmail;
         printf("Email sent successfully from %s to %s\n", senderUsername, receiverUsername);
-    } else {
+    }
+    else
+    {
         printf("User not found. Email not sent.\n");
     }
 }
 
 // Function to display the inbox of a specific user
-void displayInbox(const struct User* user) {
+void displayInbox(const struct User *user)
+{
     printf("Inbox for user %s:\n", user->username);
-    struct EmailNode* current = user->inbox;
-    while (current != NULL) {
+    struct EmailNode *current = user->inbox;
+    while (current != NULL)
+    {
         printf("-----------------------------\n");
         printf("Subject: %s\n", current->subject);
         printf("Sender: %s\n", current->sender);
         printf("Message: %s\n", current->message);
-        
+
         current = current->next;
     }
 }
 
 // Function to register a new user
-void registerUser(struct User** users, int* numUsers, const char* newUsername) {
+void registerUser(struct User **users, int *numUsers, const char *newUsername)
+{
     users = (struct User)realloc(*users, (*numUsers + 1) * sizeof(struct User));
-    if (*users == NULL) {
+    if (*users == NULL)
+    {
         printf("Memory allocation error.\n");
         exit(EXIT_FAILURE);
     }
@@ -82,17 +96,19 @@ void registerUser(struct User** users, int* numUsers, const char* newUsername) {
 }
 
 // Function to get user input for strings
-char* getUserInput(const char* prompt) {
+char *getUserInput(const char *prompt)
+{
     char buffer[200];
-    
+
     printf("%s", prompt);
     fflush(stdin); // Clear the input buffer
     fgets(buffer, sizeof(buffer), stdin);
     buffer[strcspn(buffer, "\n")] = '\0'; // Remove newline character
 
     // Allocate memory for the string and copy the input
-    char* userInput = (char*)malloc(strlen(buffer) + 1);
-    if (userInput == NULL) {
+    char *userInput = (char *)malloc(strlen(buffer) + 1);
+    if (userInput == NULL)
+    {
         printf("Memory allocation error.\n");
         exit(EXIT_FAILURE);
     }
@@ -102,7 +118,8 @@ char* getUserInput(const char* prompt) {
 }
 
 // Function to handle the main menu
-int mainMenu() {
+int mainMenu()
+{
     int choice;
     printf("\nMain Menu:\n");
     printf("1. Login\n");
@@ -116,7 +133,8 @@ int mainMenu() {
 }
 
 // Function to handle the user menu
-int userMenu() {
+int userMenu()
+{
     int choice;
     printf("\nUser Menu:\n");
     printf("1. View Messages\n");
@@ -129,97 +147,109 @@ int userMenu() {
     return choice;
 }
 
-// Function to clear the terminal
-void clearScreen() {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
+void clearScreen()
+{
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
 }
 
-int main() {
-    struct User* users = NULL;
+int main()
+{
+    struct User *users = NULL;
     int numUsers = 0;
     int mainChoice, userChoice;
-    char* username;
+    char *username;
 
-    do {
+    do
+    {
         mainChoice = mainMenu();
 
-        switch (mainChoice) {
-            case 1: {
-                clearScreen();
-                username = getUserInput("Enter your username: ");
-                struct User* currentUser = findUser(users, numUsers, username);
-                if (currentUser != NULL) {
-                    do {
-                        userChoice = userMenu();
+        switch (mainChoice)
+        {
+        case 1:
+        {
+            clearScreen();
+            username = getUserInput("Enter your username: ");
+            struct User *currentUser = findUser(users, numUsers, username);
+            if (currentUser != NULL)
+            {
+                do
+                {
+                    userChoice = userMenu();
 
-                        switch (userChoice) {
-                            case 1:
-                                clearScreen();
-                                displayInbox(currentUser);
-                                break;
-                            case 2: {
-                                clearScreen();
-                                char* receiver = getUserInput("Enter receiver's username: ");
-                                char* subject = getUserInput("Enter email subject: ");
-                                char* message = getUserInput("Enter email message: ");
+                    switch (userChoice)
+                    {
+                    case 1:
+                        clearScreen();
+                        displayInbox(currentUser);
+                        break;
+                    case 2:
+                    {
+                        clearScreen();
+                        char *receiver = getUserInput("Enter receiver's username: ");
+                        char *subject = getUserInput("Enter email subject: ");
+                        char *message = getUserInput("Enter email message: ");
 
-                                sendEmail(users, numUsers, username, receiver, subject, message);
+                        sendEmail(users, numUsers, username, receiver, subject, message);
 
-                                // Free the memory allocated for inputs
-                                free(receiver);
-                                free(subject);
-                                free(message);
-                                break;
-                            }
-                            case 3:
-                                clearScreen();
-                                printf("Logging out...\n");
-                                break;
-                            default:
-                                clearScreen();
-                                printf("Invalid choice. Please enter a valid option.\n");
-                                break;
-                        }
-                    } while (userChoice != 3);
-                } else {
-                    clearScreen();
-                    printf("User not found. Please sign up.\n");
-                }
-
-                // Free the memory allocated for username
-                free(username);
-                break;
+                        free(receiver);
+                        free(subject);
+                        free(message);
+                        break;
+                    }
+                    case 3:
+                        clearScreen();
+                        printf("Logging out...\n");
+                        break;
+                    default:
+                        clearScreen();
+                        printf("Invalid choice. Please enter a valid option.\n");
+                        break;
+                    }
+                } while (userChoice != 3);
             }
-            case 2: {
+            else
+            {
                 clearScreen();
-                char* newUsername = getUserInput("Enter a new username: ");
-                registerUser(&users, &numUsers, newUsername);
-
-                // Free the memory allocated for the new username
-                free(newUsername);
-                break;
+                printf("User not found. Please sign up.\n");
             }
-            case 3:
-                clearScreen();
-                printf("Exiting program.\n");
-                break;
-            default:
-                clearScreen();
-                printf("Invalid choice. Please enter a valid option.\n");
-                break;
+
+            // Free the memory allocated for username
+            free(username);
+            break;
+        }
+        case 2:
+        {
+            clearScreen();
+            char *newUsername = getUserInput("Enter a new username: ");
+            registerUser(&users, &numUsers, newUsername);
+
+            // Free the memory allocated for the new username
+            free(newUsername);
+            break;
+        }
+        case 3:
+            clearScreen();
+            printf("Exiting program.\n");
+            break;
+        default:
+            clearScreen();
+            printf("Invalid choice. Please enter a valid option.\n");
+            break;
         }
 
     } while (mainChoice != 3);
 
     // Clean up allocated memory for emails (deallocate linked lists)
-    for (int i = 0; i < numUsers; ++i) {
-        struct EmailNode* current = users[i].inbox;
-        while (current != NULL) {
-            struct EmailNode* next = current->next;
+    for (int i = 0; i < numUsers; ++i)
+    {
+        struct EmailNode *current = users[i].inbox;
+        while (current != NULL)
+        {
+            struct EmailNode *next = current->next;
             free(current);
             current = next;
         }
@@ -228,5 +258,5 @@ int main() {
     // Clean up allocated memory for users
     free(users);
 
-    return 0;
+        return 0;
 }
